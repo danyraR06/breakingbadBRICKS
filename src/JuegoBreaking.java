@@ -1,4 +1,6 @@
 
+import java.awt.Graphics;
+import java.awt.Image;
 import java.util.LinkedList;
 
 /*
@@ -12,19 +14,20 @@ import java.util.LinkedList;
  * @author danyrmz
  */
 public class JuegoBreaking {
-    private int iPosX;
-    private int iPosY;
-    private int iContAnf;
-    private int iDireccion;
-    private boolean bolPause;
-    private boolean bolEnd;
-    private static final int iAltoJ = 1000;
-    private static final int iAnchoJ = 800;
-    private Main maiPills;
-    private Main maiBarrilla;
-    private Main maiFire;
+    private int iPosX;  //posición de x
+    private int iPosY;   //posición de y
+    private int iContAnf;   //contador de anfetaminas
+    private int iDireccion;  //direccion de la pelotilla o fuego 
+    private boolean bolPause;   //boleana para pausar
+    private boolean bolEnd;   //boleana para terminar el juego
+    private static final int iAltoJ = 1000;   //alto del jframe
+    private static final int iAnchoJ = 800;   //ancho del jframe
+    private Main maiBarrilla;   //variable de la barrita 
+    private Main maiFire;   //variable del proyectil
+    private LinkedList <Main> lklAnfetaminas;   //lista de las anfetaminas
     
-    private LinkedList <Main> lklAnfetaminas;
-    
+    private Image dbImage;   // Imagen a proyectar en Applet	
+    private Image imaOver;  //imagen para proyectar al terminar el juego 
+    private Graphics dbg;	// Objeto grafico
     
 }
