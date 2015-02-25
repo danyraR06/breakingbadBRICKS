@@ -56,7 +56,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         iMovBol = 1;
        
         
-        URL urlImagenBarrita = this.getClass().getResource("barrita.png");
+        URL urlImagenBarrita = this.getClass().getResource("beerbar.png");
         
         // se crea el objeto para principal de la barrita 
 	maiBarrilla = new Base (0, 0, (WIDTH / iMAXANCHO) + 80,
