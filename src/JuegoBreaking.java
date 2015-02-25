@@ -39,6 +39,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     private Graphics dbg;	// Objeto grafico
     private int iMovBol; //direccion bolita
     private boolean bCorre; //booleana para iniciar
+    private boolean bCheca; // checa afuera
     
     
     public JuegoBreaking() {
@@ -54,6 +55,8 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         bCorre = false;
         
         iMovBol = 1;
+        
+        bCheca = false;
        
         
         URL urlImagenBarrita = this.getClass().getResource("beerbar.png");
@@ -70,7 +73,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         int posXBol = (WIDTH / 2 - maiBarrilla.getAncho() / 2);
         int posYBol = (HEIGHT - maiBarrilla.getAlto());
         
-        URL urlImagenBolita = this.getClass().getResource("gomez.png");
+        URL urlImagenBolita = this.getClass().getResource("proyectil.jpg");
         
         maiFire = new Base (posXBol, posYBol, WIDTH / iMAXANCHO,
                 HEIGHT / iMAXALTO,
@@ -179,28 +182,47 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         switch(iDireccion){
             case 1: {
                 if(maiBarrilla.getX() < 0) { // y se sale del applet
-                    iDireccion = 0;       // se para
+                    bCheca = true;       // se para
                 }
                 break;    	
             }    
             case 2: { // si se mueve hacia derecha 
                 // si se esta saliendo del applet
                 if(maiBarrilla.getX() + maiBarrilla.getAncho() > getWidth()) { 
-                    iDireccion = 0;       // se para
+                    bCheca = true;       // se para
                 }
                 break;  	
             }
         }
+        for(int iJ = 0; iJ < lklAnfetaminas.size(); iJ++){
+                Base anf = (Base) lklAnfetaminas.get(iJ); 
+                if(anf.intersecta(maiFire)){
+                    lklAnfetaminas.remove(anf);
+                    if(iMovBol== 1){
+                        iMovBol = 2;
+                    }
+                    else if(iMovBol == 4 ){
+                        iMovBol = 3;
+                    }
+                    else if(iMovBol == 3) {
+                        iMovBol = 4;
+                    }
+                    else if(iMovBol == 2){
+                        iMovBol = 1;
+                    }
+                }
+
+
+         }
         if(maiFire.getY() < 0) { // y esta pasando el limite
                     
             // se queda en su lugar sin salirse del applet                  
-            if(maiFire.getX() <= (getWidth()/2)) {
-                iMovBol = 3;                     
+            if(iMovBol == 1){                    
+                 iMovBol = 3;
             }
-            else
-            {
+            else if(iMovBol == 4 ){  
                 iMovBol = 2;
-            } 
+            }
         }
        // si se mueve hacia abajo
         // y se esta saliendo del applet
@@ -316,10 +338,16 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {    //Presiono flecha arriba
-            iDireccion = 2;
-        }else if (e.getKeyCode() == KeyEvent.VK_LEFT) {    //Presiono flecha abajo
-	    iDireccion = 1;
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) { //Presiono flecha arriba
+            if(!bCheca)
+            {
+               iDireccion = 2; 
+            }
+        }else if (e.getKeyCode() == KeyEvent.VK_LEFT) { //Presiono flecha abajo
+            if(!bCheca)
+            {
+              iDireccion = 1;  
+            }
         }
         else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
             bCorre = true;
