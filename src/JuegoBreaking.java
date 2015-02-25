@@ -21,8 +21,8 @@ import javax.swing.JFrame;
 public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     private final int iMAXANCHO = 12; // maximo numero de personajes por ancho
     private final int iMAXALTO = 8;  // maxuimo numero de personajes por alto
-    private int iPosX;  //posición de x
-    private int iPosY;   //posición de y
+    private int iPosXBol;  //posición de x de la bolita
+    private int iPosYBol;   //posición de y de la bolita
     private int iContAnf;   //contador de anfetaminas
     private int iDireccion;  //direccion de la pelotilla o fuego 
     private boolean bolPause;   //boleana para pausar
@@ -49,7 +49,17 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         
         bolEnd = false;
         
-        URL urlImagenBarrita = this.getClass().getResource("barrita.jpg");
+        //posiciono bolita sobre la barrita
+        iPosXBol = (getWidth() / 2);
+        iPosYBol = (getHeight() - maiBarrilla.getAlto());
+        
+        URL urlImagenBolita = this.getClass().getResource("proyectil.jpg");
+        maiFire = new Base (iPosXBol, iPosYBol, WIDTH / iMAXANCHO, 
+                HEIGHT / iMAXALTO,
+                Toolkit.getDefaultToolkit().getImage(urlImagenBolita));
+        
+        
+        URL urlImagenBarrita = this.getClass().getResource("barrita.png");
         
         // se crea el objeto para principal de la barrita 
 	maiBarrilla = new Base (0, 0, WIDTH / iMAXANCHO,
@@ -61,28 +71,24 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         maiBarrilla.setY(HEIGHT - maiBarrilla.getAlto());
         
         // se crea el objeto para las anfetamintas 
-        int iPosX = (iMAXANCHO - 1) * WIDTH / iMAXANCHO;
-        int iPosY = (iMAXALTO - 1) * HEIGHT / iMAXALTO;  
+        int iPosX = 30;
+        int iPosY = 40;
         
         //creo la lista de anfetaminas
         lklAnfetaminas = new LinkedList();
         
-        for (int iI = 0; iI < 15; iI ++) {
-            //la posición de x será un número aleatorio con un int negativo para que el juanillo
-            //entre desde fuera del applet
-            iPosX = (int) (Math.random() * (WIDTH));  
-            //la posición de y será un número aleatorio 
-            iPosY = (int) (0);   
-            
-            //se crea el url de la imagen de la anfetamina
-            URL urlImagenJuanillo = this.getClass().getResource("blueMeth.jpg");
+        for (int iI = 0; iI < 11; iI ++) {
+            for (int iJ = 0; iJ < 3; iJ++){
+                URL urlImagenMeth = this.getClass().getResource("Meth.png");
             // se crea el objeto anfetamina
             maiAnfetamina = new Base(iPosX,iPosY, WIDTH / iMAXANCHO,
                 HEIGHT / iMAXALTO,
-                Toolkit.getDefaultToolkit().getImage(urlImagenJuanillo));
-            
-            //agrego los fantasmas a la lista que estaba vacía
-            lklAnfetaminas.add(maiAnfetamina);
+                Toolkit.getDefaultToolkit().getImage(urlImagenMeth));
+                lklAnfetaminas.add(maiAnfetamina);
+                iPosY = iPosY+80;
+            }
+            iPosX = iPosX+80;
+            iPosY = 40;
         }
        
         addKeyListener(this);
@@ -111,11 +117,11 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     public void actualiza(){
         switch(iDireccion){  //en base a la direccion
             case 1: {    //se mueve hacia la izquierda
-                maiBarrilla.setX(maiBarrilla.getX() - 2);
+                maiBarrilla.setX(maiBarrilla.getX() - 4);
                 break;
             }
             case 2: {    //se mueve hacia la derecha
-                maiBarrilla.setX(maiBarrilla.getX() + 2);
+                maiBarrilla.setX(maiBarrilla.getX() + 4);
                 break;
             }
         }
@@ -164,9 +170,10 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     public void paint1(Graphics graDibujo) {
         // si la imagen ya se cargo
         if(!bolEnd){  //si el juego aun continúa
-            if (maiBarrilla != null && lklAnfetaminas != null){
+            if (maiBarrilla != null && lklAnfetaminas != null && maiFire != null){
                 //Dibuja la imagen de principal en el Applet
                     maiBarrilla.paint(graDibujo, this);
+                    maiFire.paint(graDibujo, this);
                     for (Base basAnfetaminas : lklAnfetaminas) {
                     //Dibuja la imagen de LOS fantasmitas en el Applet
                         basAnfetaminas.paint(graDibujo, this);
