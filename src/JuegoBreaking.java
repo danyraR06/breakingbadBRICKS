@@ -27,11 +27,12 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     private int iDireccion;  //direccion de la pelotilla o fuego 
     private boolean bolPause;   //boleana para pausar
     private boolean bolEnd;   //boleana para terminar el juego
-    private static final int iAltoJ = 1000;   //alto del jframe
-    private static final int iAnchoJ = 800;   //ancho del jframe
-    private Main maiBarrilla;   //variable de la barrita 
-    private Main maiFire;   //variable del proyectil
-    private LinkedList <Main> lklAnfetaminas;   //lista de las anfetaminas
+    private static final int WIDTH = 1000;    //Ancho del JFrame
+    private static final int HEIGHT = 600;    //Alto del JFrame
+    private Base maiBarrilla;   //variable de la barrita 
+    private Base maiFire;   //variable del proyectil
+    private Base maiAnfetamina; // bloque
+    private LinkedList <Base> lklAnfetaminas;   //lista de las anfetaminas
     
     private Image dbImage;   // Imagen a proyectar en Applet	
     private Image imaOver;  //imagen para proyectar al terminar el juego 
@@ -46,10 +47,12 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         
         bolPause = false;
         
-        URL urlImagenBarrita = this.getClass().getResource("barrita");
+        bolEnd = false;
+        
+        URL urlImagenBarrita = this.getClass().getResource("barrita.jpg");
         
         // se crea el objeto para principal de la barrita 
-	maiBarrilla = new Main(0, 0, WIDTH / iMAXANCHO,
+	maiBarrilla = new Base (0, 0, WIDTH / iMAXANCHO,
                 HEIGHT / iMAXALTO,
                 Toolkit.getDefaultToolkit().getImage(urlImagenBarrita));
 
@@ -59,7 +62,28 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         
         // se crea el objeto para las anfetamintas 
         int iPosX = (iMAXANCHO - 1) * WIDTH / iMAXANCHO;
-        int iPosY = (iMAXALTO - 1) * HEIGHT / iMAXALTO;    
+        int iPosY = (iMAXALTO - 1) * HEIGHT / iMAXALTO;  
+        
+        //creo la lista de anfetaminas
+        lklAnfetaminas = new LinkedList();
+        
+        for (int iI = 0; iI < 15; iI ++) {
+            //la posición de x será un número aleatorio con un int negativo para que el juanillo
+            //entre desde fuera del applet
+            iPosX = (int) (Math.random() * (WIDTH));  
+            //la posición de y será un número aleatorio 
+            iPosY = (int) (0);   
+            
+            //se crea el url de la imagen de la anfetamina
+            URL urlImagenJuanillo = this.getClass().getResource("blueMeth.jpg");
+            // se crea el objeto anfetamina
+            maiAnfetamina = new Base(iPosX,iPosY, WIDTH / iMAXANCHO,
+                HEIGHT / iMAXALTO,
+                Toolkit.getDefaultToolkit().getImage(urlImagenJuanillo));
+            
+            //agrego los fantasmas a la lista que estaba vacía
+            lklAnfetaminas.add(maiAnfetamina);
+        }
        
         addKeyListener(this);
         // Declaras un hilo
@@ -95,6 +119,13 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                 break;
             }
         }
+        for (Base basAnfetaminas : lklAnfetaminas) {
+            
+            //checo la colision entre nena y juanitos
+            if (maiBarrilla.intersecta(basAnfetaminas)) {
+                   
+            }
+        }
     }
     
     public void checaColision(){
@@ -119,7 +150,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
 	dbImage = createImage(this.getSize().width, this.getSize().height);
 	dbg = dbImage.getGraphics ();
 	}
-        URL urlImagenFondo = this.getClass().getResource("breakingBadBackground.png");
+        URL urlImagenFondo = this.getClass().getResource("breakingBadBackground.jpg");
         Image imaImagenFondo = Toolkit.getDefaultToolkit().getImage(urlImagenFondo);
         dbg.drawImage(imaImagenFondo, 0, 0, getWidth(), getHeight(), this);
 		
@@ -133,9 +164,13 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     public void paint1(Graphics graDibujo) {
         // si la imagen ya se cargo
         if(!bolEnd){  //si el juego aun continúa
-            if (maiBarrilla != null){
+            if (maiBarrilla != null && lklAnfetaminas != null){
                 //Dibuja la imagen de principal en el Applet
                     maiBarrilla.paint(graDibujo, this);
+                    for (Base basAnfetaminas : lklAnfetaminas) {
+                    //Dibuja la imagen de LOS fantasmitas en el Applet
+                        basAnfetaminas.paint(graDibujo, this);
+                    }
             }
             else {
                 //Da un mensaje mientras se carga el dibujo	
@@ -161,15 +196,19 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {    //Presiono flecha arriba
+            iDireccion = 2;
+        }else if (e.getKeyCode() == KeyEvent.VK_LEFT) {    //Presiono flecha abajo
+	    iDireccion = 1;
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {    //Presiono flecha arriba
-            iDireccion = 1;
+            iDireccion = 0;
         }else if (e.getKeyCode() == KeyEvent.VK_LEFT) {    //Presiono flecha abajo
-	    iDireccion = 2;
+	    iDireccion = 0;
         } else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){  //si la boleana de esc falsa
             bolEnd = !bolEnd;
         }else if(e.getKeyCode() == KeyEvent.VK_P){  //si la boleana de pausa es falsa
