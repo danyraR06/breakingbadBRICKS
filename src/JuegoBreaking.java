@@ -69,6 +69,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
 	// Empieza el hilo
 	t.start ();
     }
+    
     public void run () {
         while (!bolEnd) {
             if(!bolPause){
@@ -146,7 +147,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
             }  
     }
     
-    public static void JuegoBreaking(String[] args) {
+    public static void main(String[] args) {
     	// TODO code application logic here
     	JuegoBreaking score = new JuegoBreaking();
     	score.setSize(WIDTH, HEIGHT);
