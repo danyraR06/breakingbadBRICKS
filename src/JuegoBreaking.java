@@ -49,15 +49,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         
         bolEnd = false;
         
-        //posiciono bolita sobre la barrita
-        iPosXBol = (getWidth() / 2);
-        iPosYBol = (getHeight() - maiBarrilla.getAlto());
-        
-        URL urlImagenBolita = this.getClass().getResource("proyectil.jpg");
-        maiFire = new Base (iPosXBol, iPosYBol, WIDTH / iMAXANCHO, 
-                HEIGHT / iMAXALTO,
-                Toolkit.getDefaultToolkit().getImage(urlImagenBolita));
-        
+       
         
         URL urlImagenBarrita = this.getClass().getResource("barrita.png");
         
@@ -170,10 +162,9 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     public void paint1(Graphics graDibujo) {
         // si la imagen ya se cargo
         if(!bolEnd){  //si el juego aun continúa
-            if (maiBarrilla != null && lklAnfetaminas != null && maiFire != null){
+            if (maiBarrilla != null && lklAnfetaminas != null){
                 //Dibuja la imagen de principal en el Applet
                     maiBarrilla.paint(graDibujo, this);
-                    maiFire.paint(graDibujo, this);
                     for (Base basAnfetaminas : lklAnfetaminas) {
                     //Dibuja la imagen de LOS fantasmitas en el Applet
                         basAnfetaminas.paint(graDibujo, this);
