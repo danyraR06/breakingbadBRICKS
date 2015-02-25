@@ -55,11 +55,11 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                 HEIGHT / iMAXALTO,
                 Toolkit.getDefaultToolkit().getImage(urlImagenBarrita));
 
-        // se posiciona a principal  en la esquina superior izquierda del Applet 
+        // se posiciona a principal en el centro del applet
         maiBarrilla.setX(WIDTH / 2 - maiBarrilla.getAncho() / 2);
         maiBarrilla.setY(HEIGHT - maiBarrilla.getAlto());
         
-        // se crea el objeto para malo 
+        // se crea el objeto para las anfetamintas 
         int iPosX = (iMAXANCHO - 1) * WIDTH / iMAXANCHO;
         int iPosY = (iMAXALTO - 1) * HEIGHT / iMAXALTO;    
        
@@ -69,24 +69,112 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
 	// Empieza el hilo
 	t.start ();
     }
-
-    @Override
-    public void run() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void run () {
+        while (!bolEnd) {
+            if(!bolPause){
+                actualiza();    //actualiza la posicion del raton.
+                checaColision();    //checa colision del elefante y raton ademas de con el JFrane.
+                repaint();    // Se actualiza el <code>JFrame</code> repintando el contenido. 
+            }
+            try	{
+            // El thread se duerme.
+                    Thread.sleep (20);
+            }
+                catch (InterruptedException ex)	{
+                    System.out.println("Error en " + ex.toString());
+            }
+        }          
+    }
+    public void actualiza(){
+        switch(iDireccion){  //en base a la direccion
+            case 1: {    //se mueve hacia la izquierda
+                maiBarrilla.setX(maiBarrilla.getX() - 2);
+                break;
+            }
+            case 2: {    //se mueve hacia la derecha
+                maiBarrilla.setX(maiBarrilla.getX() + 2);
+                break;
+            }
+        }
+    }
+    
+    public void checaColision(){
+        switch(iDireccion){
+            case 1: {
+                if(maiBarrilla.getX() < 0) { // y se sale del applet
+                    iDireccion = 0;       // se para
+                }
+                break;    	
+            }    
+            case 2: { // si se mueve hacia derecha 
+                // si se esta saliendo del applet
+                if(maiBarrilla.getX() + maiBarrilla.getAncho() > getWidth()) { 
+                    iDireccion = 0;       // se para
+                }
+                break;  	
+            }
+        }
+    }
+    public void paint(Graphics g) {
+        if (dbImage == null) {
+	dbImage = createImage(this.getSize().width, this.getSize().height);
+	dbg = dbImage.getGraphics ();
+	}
+        URL urlImagenFondo = this.getClass().getResource("breakingBadBackground.png");
+        Image imaImagenFondo = Toolkit.getDefaultToolkit().getImage(urlImagenFondo);
+        dbg.drawImage(imaImagenFondo, 0, 0, getWidth(), getHeight(), this);
+		
+	// Actualiza el Foreground.
+	dbg.setColor(getForeground());
+	paint1(dbg);
+	// Dibuja la imagen actualizada
+	g.drawImage(dbImage, 0, 0, this);
+    }
+    public void paint1(Graphics graDibujo) {
+        // si la imagen ya se cargo
+        if(!bolEnd){  //si el juego aun continúa
+            if (maiBarrilla != null){
+                //Dibuja la imagen de principal en el Applet
+                    maiBarrilla.paint(graDibujo, this);
+            }
+            else {
+                //Da un mensaje mientras se carga el dibujo	
+                graDibujo.drawString("No se cargo la imagen..", 20, 20);
+            }
+        }else {
+                graDibujo.drawImage(imaOver,150,0,this); 
+            }  
+    }
+    
+    public static void JuegoBreaking(String[] args) {
+    	// TODO code application logic here
+    	JuegoBreaking score = new JuegoBreaking();
+    	score.setSize(WIDTH, HEIGHT);
+    	score.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	score.setVisible(true);
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {    //Presiono flecha arriba
+            iDireccion = 1;
+        }else if (e.getKeyCode() == KeyEvent.VK_LEFT) {    //Presiono flecha abajo
+	    iDireccion = 2;
+        }else if(e.getKeyCode() == KeyEvent.VK_P){  //si la boleana de pausa es falsa
+            if (bolPause)
+                bolPause = false;
+            else
+                bolPause = true;      
+            }
+        }
     }
-}
