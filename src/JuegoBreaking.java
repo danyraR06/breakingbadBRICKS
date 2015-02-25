@@ -46,8 +46,6 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         
         bolPause = false;
         
-        bolEnd = false;
-        
         URL urlImagenBarrita = this.getClass().getResource("barrita");
         
         // se crea el objeto para principal de la barrita 
@@ -131,6 +129,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
 	// Dibuja la imagen actualizada
 	g.drawImage(dbImage, 0, 0, this);
     }
+    
     public void paint1(Graphics graDibujo) {
         // si la imagen ya se cargo
         if(!bolEnd){  //si el juego aun continúa
@@ -171,6 +170,8 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
             iDireccion = 1;
         }else if (e.getKeyCode() == KeyEvent.VK_LEFT) {    //Presiono flecha abajo
 	    iDireccion = 2;
+        } else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){  //si la boleana de esc falsa
+            bolEnd = !bolEnd;
         }else if(e.getKeyCode() == KeyEvent.VK_P){  //si la boleana de pausa es falsa
             if (bolPause)
                 bolPause = false;
