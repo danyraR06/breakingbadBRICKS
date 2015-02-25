@@ -37,6 +37,8 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     private Image dbImage;   // Imagen a proyectar en Applet	
     private Image imaOver;  //imagen para proyectar al terminar el juego 
     private Graphics dbg;	// Objeto grafico
+    private int iMovBol; //direccion bolita
+    private boolean bCorre; //booleana para iniciar
     
     
     public JuegoBreaking() {
@@ -49,13 +51,16 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         
         bolEnd = false;
         
+        bCorre = false;
+        
+        iMovBol = 1;
        
         
         URL urlImagenBarrita = this.getClass().getResource("barrita.png");
         
         // se crea el objeto para principal de la barrita 
-	maiBarrilla = new Base (0, 0, WIDTH / iMAXANCHO,
-                HEIGHT / iMAXALTO,
+	maiBarrilla = new Base (0, 0, (WIDTH / iMAXANCHO) + 80,
+                (HEIGHT / iMAXALTO) - 30,
                 Toolkit.getDefaultToolkit().getImage(urlImagenBarrita));
 
         // se posiciona a principal en el centro del applet
@@ -124,6 +129,34 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                    
             }
         }
+        if (bCorre) {
+            switch(iMovBol){
+                case 1: { // si se mueve hacia arriba 
+                    maiFire.setX(maiFire.getX()+ 3);
+                    maiFire.setY(maiFire.getY()- 3);
+                    break;    	
+                }     
+                case 2: { // si se mueve hacia abajo y sale de la ventana
+                    // del cuadrante 3             
+                        maiFire.setX(maiFire.getX()-3);
+                        maiFire.setY(maiFire.getY()+ 3);
+                    // se queda en su lugar sin salirse del applet
+  
+                break;    	
+                } 
+                case 3: {// si se mueve hacia abajo cuadrante 4
+                    maiFire.setY(maiFire.getY()+ 3);
+                    maiFire.setX(maiFire.getX()+ 3);
+                    
+                    break;
+                }    
+                case 4: { // si se hacia arriba cuadrante 2
+                        maiFire.setX(maiFire.getX()- 3);
+                        maiFire.setY(maiFire.getY()- 3);                  
+                    break;    	
+                }
+            }   
+        }
     }
     
     public void checaColision(){
@@ -141,6 +174,70 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                 }
                 break;  	
             }
+        }
+        if(maiFire.getY() < 0) { // y esta pasando el limite
+                    
+            // se queda en su lugar sin salirse del applet                  
+            if(maiFire.getX() <= (getWidth()/2)) {
+                iMovBol = 3;                     
+            }
+            else
+            {
+                iMovBol = 2;
+            } 
+        }
+       // si se mueve hacia abajo
+        // y se esta saliendo del applet
+        else if(maiFire.getY() + maiFire.getAlto() > getHeight()) {
+            // se queda en su lugar sin salirse del applet
+            bCorre = false;
+            posInicial();               
+        }
+
+        else if(maiFire.getX() < 0) { // y se sale del applet
+            // se queda en su lugar sin salirse del applet
+            if(iMovBol == 2){                    
+                 iMovBol = 3;
+            }
+            else if(iMovBol == 3 ){  
+                iMovBol = 2;
+            }
+            else if(iMovBol == 1) {
+                iMovBol = 4;
+            }
+            else if(iMovBol == 4){
+                iMovBol = 1;
+            }
+
+
+        }
+
+        // si se esta saliendo del applet
+        else if(maiFire.getX() + maiFire.getAncho() > getWidth()) { 
+            // se queda en su lugar sin salirse del applet
+            if(iMovBol== 2){
+                 iMovBol = 3;
+            }
+            else if(iMovBol == 3 ){
+                iMovBol = 2;
+            }
+            else if(iMovBol == 1) {
+                iMovBol = 4;
+            }
+            else if(iMovBol == 4){
+                iMovBol = 1;
+            }
+        }
+        else if(maiFire.intersecta(maiBarrilla)){
+
+            if(maiFire.getX() <= (maiBarrilla.getX()+ (maiBarrilla.getAncho()/2))){
+
+                iMovBol = 4;
+            }
+            else
+            {  
+                iMovBol=1;
+            }        
         }
     }
     public void paint(Graphics g) {
@@ -179,6 +276,14 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
             }  
     }
     
+    public void posInicial() {
+        // indica las nuevas posiciones de la galleta
+        maiBarrilla.setX((getWidth()/2) - (maiBarrilla.getAncho()/2));
+        maiBarrilla.setY((getHeight())- (maiBarrilla.getAlto()));
+        maiFire.setX((getWidth()/2)- (maiFire.getAncho()/2));
+        maiFire.setY((getHeight()-maiBarrilla.getAlto())-(maiFire.getAlto()));
+    }
+    
     public static void main(String[] args) {
     	// TODO code application logic here
     	JuegoBreaking score = new JuegoBreaking();
@@ -198,6 +303,9 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
             iDireccion = 2;
         }else if (e.getKeyCode() == KeyEvent.VK_LEFT) {    //Presiono flecha abajo
 	    iDireccion = 1;
+        }
+        else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+            bCorre = true;
         }
     }
 
