@@ -67,6 +67,16 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         maiBarrilla.setX(WIDTH / 2 - maiBarrilla.getAncho() / 2);
         maiBarrilla.setY(HEIGHT - maiBarrilla.getAlto());
         
+        int posXBol = (WIDTH / 2 - maiBarrilla.getAncho() / 2);
+        int posYBol = (HEIGHT - maiBarrilla.getAlto());
+        
+        URL urlImagenBolita = this.getClass().getResource("gomez.png");
+        
+        maiFire = new Base (posXBol, posYBol, WIDTH / iMAXANCHO,
+                HEIGHT / iMAXALTO,
+                Toolkit.getDefaultToolkit().getImage(urlImagenBolita));
+        
+        
         // se crea el objeto para las anfetamintas 
         int iPosX = 30;
         int iPosY = 40;
@@ -78,8 +88,8 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
             for (int iJ = 0; iJ < 3; iJ++){
                 URL urlImagenMeth = this.getClass().getResource("Meth.png");
             // se crea el objeto anfetamina
-            maiAnfetamina = new Base(iPosX,iPosY, WIDTH / iMAXANCHO,
-                HEIGHT / iMAXALTO,
+            maiAnfetamina = new Base(iPosX,iPosY, (WIDTH / iMAXANCHO) - 40,
+            (HEIGHT / iMAXALTO)-40,
                 Toolkit.getDefaultToolkit().getImage(urlImagenMeth));
                 lklAnfetaminas.add(maiAnfetamina);
                 iPosY = iPosY+80;
@@ -115,18 +125,24 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         switch(iDireccion){  //en base a la direccion
             case 1: {    //se mueve hacia la izquierda
                 maiBarrilla.setX(maiBarrilla.getX() - 4);
+                if (!bCorre) {
+                    maiFire.setX(maiFire.getX()- 4);
+                }
                 break;
             }
             case 2: {    //se mueve hacia la derecha
                 maiBarrilla.setX(maiBarrilla.getX() + 4);
+                if (!bCorre) {
+                    maiFire.setX(maiFire.getX()+ 4);
+                }
                 break;
             }
-        }
-        for (Base basAnfetaminas : lklAnfetaminas) {
-            
-            //checo la colision entre nena y juanitos
-            if (maiBarrilla.intersecta(basAnfetaminas)) {
-                   
+            case 3: {// se deja de mover
+                maiBarrilla.setX(maiBarrilla.getX());
+                if (!bCorre) {
+                    maiFire.setX(maiFire.getX());
+                }
+                break;
             }
         }
         if (bCorre) {
@@ -262,6 +278,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
             if (maiBarrilla != null && lklAnfetaminas != null){
                 //Dibuja la imagen de principal en el Applet
                     maiBarrilla.paint(graDibujo, this);
+                    maiFire.paint(graDibujo, this);
                     for (Base basAnfetaminas : lklAnfetaminas) {
                     //Dibuja la imagen de LOS fantasmitas en el Applet
                         basAnfetaminas.paint(graDibujo, this);
@@ -312,9 +329,9 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_RIGHT) {    //Presiono flecha arriba
-            iDireccion = 0;
+            iDireccion = 3;
         }else if (e.getKeyCode() == KeyEvent.VK_LEFT) {    //Presiono flecha abajo
-	    iDireccion = 0;
+	    iDireccion = 3;
         } else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){  //si la boleana de esc falsa
             bolEnd = !bolEnd;
         }else if(e.getKeyCode() == KeyEvent.VK_P){  //si la boleana de pausa es falsa
