@@ -24,22 +24,28 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     private int iPosXBol;  //posición de x de la bolita
     private int iPosYBol;   //posición de y de la bolita
     private int iContAnf;   //contador de anfetaminas
-    private int iDireccion;  //direccion de la pelotilla o fuego 
+    private int iDireccion;  //direccion de la pelotilla o fuego
+    private int iContVidas;  //contador de vidas
+    private int iMovBol; //direccion bolita
+    private long lonTiempoActual;
+    private long lonTiempoInicial;
     private boolean bolPause;   //boleana para pausar
     private boolean bolEnd;   //boleana para terminar el juego
+    private boolean bCorre; //booleana para iniciar
+    private boolean bCheca; // checa afuera
     private static final int WIDTH = 1000;    //Ancho del JFrame
     private static final int HEIGHT = 600;    //Alto del JFrame
     private Base maiBarrilla;   //variable de la barrita 
     private Base maiFire;   //variable del proyectil
     private Base maiAnfetamina; // bloque
+    private Base maiVidas;  //imagen de vidas
     private LinkedList <Base> lklAnfetaminas;   //lista de las anfetaminas
-    
+    private LinkedList <Base> lklVidas;  //lista para manejar vidas
+    private Animacion aniBitch;  //variable para la animacion de jesse
+    private Animacion aniBlow;  //variable para la animación de explosion
     private Image dbImage;   // Imagen a proyectar en Applet	
     private Image imaOver;  //imagen para proyectar al terminar el juego 
     private Graphics dbg;	// Objeto grafico
-    private int iMovBol; //direccion bolita
-    private boolean bCorre; //booleana para iniciar
-    private boolean bCheca; // checa afuera
     
     
     public JuegoBreaking() {
@@ -47,6 +53,8 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         iDireccion = 0;
         
         iContAnf = 0;
+        
+        iContVidas = 3;
         
         bolPause = false;
         
@@ -57,6 +65,10 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         iMovBol = 1;
         
         bCheca = false;
+       
+        //creo imagen de fondo para game over
+        URL urlImagenOver= this.getClass().getResource("breBOver.jpg"); 
+	imaOver = Toolkit.getDefaultToolkit().getImage(urlImagenOver);
        
         
         URL urlImagenBarrita = this.getClass().getResource("beerbar.png");
@@ -73,7 +85,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         int posXBol = (WIDTH / 2 - maiBarrilla.getAncho() / 2);
         int posYBol = (HEIGHT - maiBarrilla.getAlto());
         
-        URL urlImagenBolita = this.getClass().getResource("proyectil.jpg");
+        URL urlImagenBolita = this.getClass().getResource("gomez.png");
         
         maiFire = new Base (posXBol, posYBol, WIDTH / iMAXANCHO,
                 HEIGHT / iMAXALTO,
@@ -100,6 +112,40 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
             iPosX = iPosX+80;
             iPosY = 40;
         }
+         
+        int iPosXVi = 820;
+        int iPosYVi = 20;
+        
+        lklVidas = new LinkedList();
+        
+        //creo imagen de las vidas en lista
+        for(int iI = 0; iI < 3; iI++){
+           URL urlImagenVidas = this.getClass().getResource("vidaBatch.gif");
+           maiVidas = new Base (iPosXVi, iPosYVi, (WIDTH / iMAXANCHO) -30,
+                (HEIGHT / iMAXALTO) - 10,
+                Toolkit.getDefaultToolkit().getImage(urlImagenVidas));
+           lklVidas.add(maiVidas);
+           iPosXVi = iPosXVi + 60;
+        }
+        
+        Image imaBitch1 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("bitch1.png"));
+        Image imaBitch2 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("bitch2.png"));
+        Image imaBitch3 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("bitch3.png"));
+        Image imaBitch4 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("bitch4.png"));
+        Image imaBitch5 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("bitch5.png"));
+        
+        aniBitch = new Animacion();
+        aniBitch.sumaCuadro(imaBitch1, 100);
+        aniBitch.sumaCuadro(imaBitch2, 100);
+        aniBitch.sumaCuadro(imaBitch3, 100);
+        aniBitch.sumaCuadro(imaBitch4, 100);
+        aniBitch.sumaCuadro(imaBitch5, 100);
+        
        
         addKeyListener(this);
         // Declaras un hilo
@@ -125,6 +171,18 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         }          
     }
     public void actualiza(){
+        //Determina el tiempo que ha transcurrido desde que el Applet inicio su 
+        //ejecución
+        long tiempoTranscurrido =
+             System.currentTimeMillis() - lonTiempoActual;
+        
+        //Guarda el tiempo actual
+       	lonTiempoActual += tiempoTranscurrido;
+         
+        //Actualiza la animAmbulanciaación en base al tiempo transcurrido
+        aniBitch.actualiza(tiempoTranscurrido);
+        
+        
         switch(iDireccion){  //en base a la direccion
             case 1: {    //se mueve hacia la izquierda
                 maiBarrilla.setX(maiBarrilla.getX() - 4);
@@ -198,6 +256,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                 Base anf = (Base) lklAnfetaminas.get(iJ); 
                 if(anf.intersecta(maiFire)){
                     lklAnfetaminas.remove(anf);
+                    iContAnf ++;
                     if(iMovBol== 1){
                         iMovBol = 2;
                     }
@@ -229,6 +288,9 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         else if(maiFire.getY() + maiFire.getAlto() > getHeight()) {
             // se queda en su lugar sin salirse del applet
             bCorre = false;
+            iContVidas--;
+            //aqui falta agregar que se elimine la imagen de la vida
+            
             posInicial();               
         }
 
@@ -297,7 +359,8 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     public void paint1(Graphics graDibujo) {
         // si la imagen ya se cargo
         if(!bolEnd){  //si el juego aun continúa
-            if (maiBarrilla != null && lklAnfetaminas != null){
+            if (maiBarrilla != null && lklAnfetaminas != null && maiFire != null
+                    && lklVidas != null){
                 //Dibuja la imagen de principal en el Applet
                     maiBarrilla.paint(graDibujo, this);
                     maiFire.paint(graDibujo, this);
@@ -305,13 +368,16 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                     //Dibuja la imagen de LOS fantasmitas en el Applet
                         basAnfetaminas.paint(graDibujo, this);
                     }
+                    for (Base basVidas : lklVidas){
+                        basVidas.paint(graDibujo, this);
+                    }
             }
             else {
                 //Da un mensaje mientras se carga el dibujo	
                 graDibujo.drawString("No se cargo la imagen..", 20, 20);
             }
         }else {
-                graDibujo.drawImage(imaOver,150,0,this); 
+                graDibujo.drawImage(imaOver,0,0,getWidth(), getHeight(), this); 
             }  
     }
     
@@ -338,12 +404,12 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) { //Presiono flecha arriba
+        if (e.getKeyCode() == KeyEvent.VK_RIGHT) { //Presiono flecha de la derecha
             if(!bCheca)
             {
                iDireccion = 2; 
             }
-        }else if (e.getKeyCode() == KeyEvent.VK_LEFT) { //Presiono flecha abajo
+        }else if (e.getKeyCode() == KeyEvent.VK_LEFT) { //Presiono flecha izquierda
             if(!bCheca)
             {
               iDireccion = 1;  
