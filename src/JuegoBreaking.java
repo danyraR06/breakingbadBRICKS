@@ -16,7 +16,10 @@ import javax.swing.JFrame;
 
 /**
  *
- * @author danyrmz
+ * @author Daniela Ramírez y Juan Ordaz
+ * Matrícula: A01139581 y A
+ * Fecha: 25/Febrero/2015
+ * Version 1.0
  */
 public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     private final int iMAXANCHO = 12; // maximo numero de personajes por ancho
@@ -543,6 +546,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                 bolEnd = true;
                 sndBack.stop();
                 sndFinal.play();
+                
             }else if(e.getKeyCode() == KeyEvent.VK_P){  
                 //si la boleana de pausa es falsa
                 if (bolPause)
