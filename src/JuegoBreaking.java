@@ -122,9 +122,9 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         
         //creo imagen de las vidas en lista
         for(int iI = 0; iI < 3; iI++){
-           URL urlImagenVidas = this.getClass().getResource("vidaBatch.gif");
+           URL urlImagenVidas = this.getClass().getResource("vidaBatch.png");
            maiVidas = new Base (iPosXVi, iPosYVi, (WIDTH / iMAXANCHO) -30,
-                (HEIGHT / iMAXALTO) - 10,
+                (HEIGHT / iMAXALTO) -20,
                 Toolkit.getDefaultToolkit().getImage(urlImagenVidas));
            lklVidas.add(maiVidas);
            iPosXVi = iPosXVi + 60;
