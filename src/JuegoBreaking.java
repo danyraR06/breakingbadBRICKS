@@ -47,11 +47,13 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     private Animacion aniBlow;  //variable para la animación de explosion
     private Image dbImage;   // Imagen a proyectar en Applet	
     private Image imaOver;  //imagen para proyectar al terminar el juego 
+    private Image imaIn; //pagina de inicio
     private Graphics dbg;	// Objeto grafico
     private SoundClip sndBack; //musica de fondo
     private SoundClip sndBitch;  //sonido cuando se salga la bolita 
     private SoundClip sndColision; //sonido cuando golpee las metanfetaminas
     private SoundClip sndFinal;  //sonido al terminar el juego
+    private boolean bInicia; //booleana para iniciar en la pantalla
     
     public JuegoBreaking() {
         
@@ -71,6 +73,8 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         iMovBol = 1;
         
         bCheca = false;
+        
+        bInicia = false;
        
         //creo imagen de fondo para game over
         URL urlImagenOver= this.getClass().getResource("breBOver.jpg"); 
@@ -226,33 +230,37 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                 break;
             }
         }
-        if (bCorre) {
-            switch(iMovBol){
-                case 1: { // si se mueve hacia arriba 
-                    maiFire.setX(maiFire.getX()+ 3);
-                    maiFire.setY(maiFire.getY()- 3);
-                    break;    	
-                }     
-                case 2: { // si se mueve hacia abajo y sale de la ventana
-                    // del cuadrante 3             
-                        maiFire.setX(maiFire.getX()-3);
+        
+        if (bInicia)
+        {
+            if (bCorre) {
+                switch(iMovBol){
+                    case 1: { // si se mueve hacia arriba 
+                        maiFire.setX(maiFire.getX()+ 3);
+                        maiFire.setY(maiFire.getY()- 3);
+                        break;    	
+                    }     
+                    case 2: { // si se mueve hacia abajo y sale de la ventana
+                        // del cuadrante 3             
+                            maiFire.setX(maiFire.getX()-3);
+                            maiFire.setY(maiFire.getY()+ 3);
+                        // se queda en su lugar sin salirse del applet
+
+                        break;    	
+                    } 
+                    case 3: {// si se mueve hacia abajo cuadrante 4
                         maiFire.setY(maiFire.getY()+ 3);
-                    // se queda en su lugar sin salirse del applet
-  
-                    break;    	
-                } 
-                case 3: {// si se mueve hacia abajo cuadrante 4
-                    maiFire.setY(maiFire.getY()+ 3);
-                    maiFire.setX(maiFire.getX()+ 3);
-                    
-                    break;
-                }    
-                case 4: { // si se hacia arriba cuadrante 2
-                        maiFire.setX(maiFire.getX()- 3);
-                        maiFire.setY(maiFire.getY()- 3);                  
-                    break;    	
-                }
-            }   
+                        maiFire.setX(maiFire.getX()+ 3);
+
+                        break;
+                    }    
+                    case 4: { // si se hacia arriba cuadrante 2
+                            maiFire.setX(maiFire.getX()- 3);
+                            maiFire.setY(maiFire.getY()- 3);                  
+                        break;    	
+                    }
+                }   
+            }
         }
     }
     
@@ -381,9 +389,19 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
 	}
         URL urlImagenFondo = this.getClass().getResource
         ("breakingBadBackground.jpg");
+        URL urlImagenIn= this.getClass().getResource("breakingMenu.jpg");
         Image imaImagenFondo = Toolkit.getDefaultToolkit().getImage
         (urlImagenFondo);
-        dbg.drawImage(imaImagenFondo, 0, 0, getWidth(), getHeight(), this);
+        Image imaImagenInicio = Toolkit.getDefaultToolkit().getImage
+        (urlImagenIn);
+        if(!bInicia)
+        {
+            dbg.drawImage(imaImagenInicio, 0, 0, getWidth(), getHeight(), this);
+        }
+        else
+        {
+            dbg.drawImage(imaImagenFondo, 0, 0, getWidth(), getHeight(), this);  
+        }
 		
 	// Actualiza el Foreground.
 	dbg.setColor(getForeground());
@@ -394,8 +412,10 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     
     public void paint1(Graphics graDibujo) {
         // si la imagen ya se cargo
-        if(!bolEnd && iContVidas>0){  //si el juego aun continúa
-            if (maiBarrilla != null && lklAnfetaminas != null && maiFire != null
+        if(bInicia)
+        {
+            if(!bolEnd && iContVidas>0){  //si el juego aun continúa
+                if (maiBarrilla != null && lklAnfetaminas != null && maiFire != null
                     && lklVidas != null && aniBitch != null){
                 //Dibuja la imagen de principal en el Applet
                     maiBarrilla.paint(graDibujo, this);
@@ -412,14 +432,16 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                     for (Base basVidas : lklVidas){
                         basVidas.paint(graDibujo, this);
                     }
-            }
-            else {
-                //Da un mensaje mientras se carga el dibujo	
-                graDibujo.drawString("No se cargo la imagen..", 20, 20);
-            }
-        }else {
+                }
+                else {
+                    //Da un mensaje mientras se carga el dibujo	
+                    graDibujo.drawString("No se cargo la imagen..", 20, 20);
+                }
+            }else {
                 graDibujo.drawImage(imaOver,0,0,getWidth(), getHeight(), this); 
             }  
+        }
+        
     }
     
     public void posInicial() {
@@ -456,7 +478,10 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
               iDireccion = 1;  
             }
         }else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-                bCorre = true;
+                if(bInicia)
+                {
+                    bCorre = true;
+                }
         }
     }
 
@@ -479,6 +504,9 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                     bolPause = false;
                 else
                     bolPause = true;      
+            }else if(e.getKeyCode() == KeyEvent.VK_A){  
+                //si la boleana de inicio es falsa
+                bInicia = true;
             }
         }
     }
