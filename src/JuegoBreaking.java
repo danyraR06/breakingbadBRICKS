@@ -43,6 +43,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     private Base maiVidas;  //imagen de vidas
     private LinkedList <Base> lklAnfetaminas;   //lista de las anfetaminas
     private LinkedList <Base> lklVidas;  //lista para manejar vidas
+    private LinkedList <Animacion> lklBlow;  //lista para las explosiones
     private Animacion aniBitch;  //variable para la animacion de jesse
     private Animacion aniBlow;  //variable para la animación de explosion
     private Image dbImage;   // Imagen a proyectar en Applet	
@@ -118,7 +119,15 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
             iPosX = iPosX+60;
             iPosY = 40;
         }
-         
+        
+        lklBlow = new LinkedList();
+        
+          for (int iI = 0; iI < 16; iI ++) {
+            for (int iJ = 0; iJ < 3; iJ++){
+                
+                
+            }
+          }
         int iPosXVi = 940;
         int iPosYVi = 330;
         
@@ -157,6 +166,45 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         aniBitch.sumaCuadro(imaBitch3, 100);
         aniBitch.sumaCuadro(imaBitch4, 100);
         aniBitch.sumaCuadro(imaBitch5, 100);
+        
+        Image imaBlow1 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("methblow1.png"));
+        Image imaBlow2 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("methblow2.png"));
+        Image imaBlow3 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("methblow3.png"));
+        Image imaBlow4 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("methblow4.png"));
+        Image imaBlow5 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("methblow5.png"));
+        Image imaBlow6 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("methblow6.png"));
+        Image imaBlow7 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("methblow7.png"));
+        Image imaBlow8 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("methblow8.png"));
+        Image imaBlow9 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("methblow9.png"));
+        Image imaBlow10 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("methblow10.png"));
+        Image imaBlow11 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("methblow11.png"));
+        Image imaBlow12 = Toolkit.getDefaultToolkit().getImage(
+                        this.getClass().getResource("methblow12.png"));
+        
+        aniBlow = new Animacion();
+        aniBlow.sumaCuadro(imaBlow1, 100);
+        aniBlow.sumaCuadro(imaBlow2, 100);
+        aniBlow.sumaCuadro(imaBlow3, 100);
+        aniBlow.sumaCuadro(imaBlow4, 100);
+        aniBlow.sumaCuadro(imaBlow5, 100);
+        aniBlow.sumaCuadro(imaBlow6, 100);
+        aniBlow.sumaCuadro(imaBlow7, 100);
+        aniBlow.sumaCuadro(imaBlow8, 100);
+        aniBlow.sumaCuadro(imaBlow9, 100);
+        aniBlow.sumaCuadro(imaBlow10, 100);
+        aniBlow.sumaCuadro(imaBlow11, 100);
+        aniBlow.sumaCuadro(imaBlow12, 100);
         
         sndBack = new SoundClip("babyBlue.wav");
         sndFinal = new SoundClip("breakingMain.wav");
