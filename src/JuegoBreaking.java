@@ -48,7 +48,9 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     private Image dbImage;   // Imagen a proyectar en Applet	
     private Image imaOver;  //imagen para proyectar al terminar el juego 
     private Graphics dbg;	// Objeto grafico
-    
+    private SoundClip sndBack; //musica de fondo
+    private SoundClip sndBitch;  //sonido cuando se salga la bolita 
+    private SoundClip sndColision; //sonido cuando golpee las metanfetaminas
     
     public JuegoBreaking() {
         
@@ -155,6 +157,10 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         aniBitch.sumaCuadro(imaBitch4, 100);
         aniBitch.sumaCuadro(imaBitch5, 100);
         
+        sndBack = new SoundClip("babyBlue.wav");
+        
+        sndBack.setLooping(true);
+        sndBack.play();
        
         addKeyListener(this);
         // Declaras un hilo
@@ -190,7 +196,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
          
         if(iContVidas == 1)
         {
-            //Actualiza la animAmbulanciaación en base al tiempo transcurrido
+            //Actualiza la aniBitch en base al tiempo transcurrido
             aniBitch.actualiza(tiempoTranscurrido);
         }
         
