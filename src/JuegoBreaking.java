@@ -101,7 +101,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         //creo la lista de anfetaminas
         lklAnfetaminas = new LinkedList();
         
-        for (int iI = 0; iI < 11; iI ++) {
+        for (int iI = 0; iI < 16; iI ++) {
             for (int iJ = 0; iJ < 3; iJ++){
                 URL urlImagenMeth = this.getClass().getResource("Meth.png");
             // se crea el objeto anfetamina
@@ -111,23 +111,26 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                 lklAnfetaminas.add(maiAnfetamina);
                 iPosY = iPosY+80;
             }
-            iPosX = iPosX+80;
+            iPosX = iPosX+60;
             iPosY = 40;
         }
          
-        int iPosXVi = 820;
-        int iPosYVi = 20;
+        int iPosXVi = 940;
+        int iPosYVi = 330;
         
         lklVidas = new LinkedList();
         
         //creo imagen de las vidas en lista
-        for(int iI = 0; iI < 3; iI++){
-           URL urlImagenVidas = this.getClass().getResource("vidaBatch.gif");
-           maiVidas = new Base (iPosXVi, iPosYVi, (WIDTH / iMAXANCHO) -30,
-                (HEIGHT / iMAXALTO) - 10,
-                Toolkit.getDefaultToolkit().getImage(urlImagenVidas));
-           lklVidas.add(maiVidas);
-           iPosXVi = iPosXVi + 60;
+        for(int iI = 0; iI < 1; iI++){
+            for(int iJ = 0; iJ <3; iJ++) {
+                URL urlImagenVidas = this.getClass().getResource("vidaBatch.png");
+                maiVidas = new Base (iPosXVi, iPosYVi, (WIDTH / iMAXANCHO) -30,
+                        (HEIGHT / iMAXALTO) -20,
+                        Toolkit.getDefaultToolkit().getImage(urlImagenVidas));
+                lklVidas.add(maiVidas);
+                iPosYVi = iPosYVi + 60;
+            }
+            iPosXVi = 940;
         }
         
         iPosXAnim = 20;
