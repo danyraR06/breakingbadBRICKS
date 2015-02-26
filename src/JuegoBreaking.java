@@ -56,7 +56,8 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         
         iContAnf = 0;
         
-        iContVidas = 3;
+        iContVidas = 4;
+            
         
         bolPause = false;
         
@@ -163,7 +164,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     }
     
     public void run () {
-        while (!bolEnd) {
+        while (!bolEnd && iContVidas>0) {
             if(!bolPause){
                 actualiza();    //actualiza la posicion del raton.
                 checaColision();    //checa colision del elefante y raton ademas de con el JFrane.
@@ -187,8 +188,11 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         //Guarda el tiempo actual
        	lonTiempoActual += tiempoTranscurrido;
          
-        //Actualiza la animAmbulanciaación en base al tiempo transcurrido
-        aniBitch.actualiza(tiempoTranscurrido);
+        if(iContVidas == 1)
+        {
+            //Actualiza la animAmbulanciaación en base al tiempo transcurrido
+            aniBitch.actualiza(tiempoTranscurrido);
+        }
         
         
         switch(iDireccion){  //en base a la direccion
@@ -227,7 +231,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                         maiFire.setY(maiFire.getY()+ 3);
                     // se queda en su lugar sin salirse del applet
   
-                break;    	
+                    break;    	
                 } 
                 case 3: {// si se mueve hacia abajo cuadrante 4
                     maiFire.setY(maiFire.getY()+ 3);
@@ -262,7 +266,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         }
         for(int iJ = 0; iJ < lklAnfetaminas.size(); iJ++){
                 Base anf = (Base) lklAnfetaminas.get(iJ); 
-                if(anf.intersecta(maiFire)){
+                if(maiFire.intersecta(anf)){
                     lklAnfetaminas.remove(anf);
                     iContAnf ++;
                     if(iMovBol== 1){
@@ -297,6 +301,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
             // se queda en su lugar sin salirse del applet
             bCorre = false;
             iContVidas--;
+            lklAnfetaminas.remove(maiVidas);
             //aqui falta agregar que se elimine la imagen de la vida
             
             posInicial();               
@@ -353,8 +358,10 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
 	dbImage = createImage(this.getSize().width, this.getSize().height);
 	dbg = dbImage.getGraphics ();
 	}
-        URL urlImagenFondo = this.getClass().getResource("breakingBadBackground.jpg");
-        Image imaImagenFondo = Toolkit.getDefaultToolkit().getImage(urlImagenFondo);
+        URL urlImagenFondo = this.getClass().getResource
+        ("breakingBadBackground.jpg");
+        Image imaImagenFondo = Toolkit.getDefaultToolkit().getImage
+        (urlImagenFondo);
         dbg.drawImage(imaImagenFondo, 0, 0, getWidth(), getHeight(), this);
 		
 	// Actualiza el Foreground.
@@ -366,13 +373,17 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     
     public void paint1(Graphics graDibujo) {
         // si la imagen ya se cargo
-        if(!bolEnd){  //si el juego aun continúa
+        if(!bolEnd && iContVidas>0){  //si el juego aun continúa
             if (maiBarrilla != null && lklAnfetaminas != null && maiFire != null
                     && lklVidas != null && aniBitch != null){
                 //Dibuja la imagen de principal en el Applet
                     maiBarrilla.paint(graDibujo, this);
                     maiFire.paint(graDibujo, this);
-                    graDibujo.drawImage(aniBitch.getImagen(),iPosXAnim, iPosYAnim, this);
+                    if(iContVidas == 1)
+                    {
+                       graDibujo.drawImage(aniBitch.getImagen(),
+                               iPosXAnim, iPosYAnim, this);
+                    }
                     for (Base basAnfetaminas : lklAnfetaminas) {
                     //Dibuja la imagen de LOS fantasmitas en el Applet
                         basAnfetaminas.paint(graDibujo, this);
@@ -423,25 +434,28 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
             {
               iDireccion = 1;  
             }
-        }
-        else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-            bCorre = true;
+        }else if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+                bCorre = true;
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_RIGHT) {    //Presiono flecha arriba
-            iDireccion = 3;
-        }else if (e.getKeyCode() == KeyEvent.VK_LEFT) {    //Presiono flecha abajo
-	    iDireccion = 3;
-        } else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){  //si la boleana de esc falsa
-            bolEnd = !bolEnd;
-        }else if(e.getKeyCode() == KeyEvent.VK_P){  //si la boleana de pausa es falsa
-            if (bolPause)
-                bolPause = false;
-            else
-                bolPause = true;      
+            if (e.getKeyCode() == KeyEvent.VK_RIGHT) { //Presiono flecha arriba
+                iDireccion = 3;
+            }else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            //Presiono flecha abajo
+                iDireccion = 3;
+            
+            }else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){ 
+            //si la boleana de esc falsa
+                bolEnd = true;
+            }else if(e.getKeyCode() == KeyEvent.VK_P){  
+                //si la boleana de pausa es falsa
+                if (bolPause)
+                    bolPause = false;
+                else
+                    bolPause = true;      
             }
         }
     }
