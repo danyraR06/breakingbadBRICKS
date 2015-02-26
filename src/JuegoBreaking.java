@@ -89,7 +89,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         
         URL urlImagenBolita = this.getClass().getResource("gomez.png");
         
-        maiFire = new Base (posXBol, posYBol, WIDTH / iMAXANCHO,
+        maiFire = new Base (posXBol, posYBol, (WIDTH / iMAXANCHO) - 30,
                 HEIGHT / iMAXALTO,
                 Toolkit.getDefaultToolkit().getImage(urlImagenBolita));
         
