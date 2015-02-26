@@ -486,7 +486,10 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
                     graDibujo.drawString("No se cargo la imagen..", 20, 20);
                 }
             }else {
+                sndBack.stop();
+                sndFinal.play();
                 graDibujo.drawImage(imaOver,0,0,getWidth(), getHeight(), this); 
+                
             }  
         }
         
