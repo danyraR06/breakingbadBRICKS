@@ -124,14 +124,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
             iPosY = 40;
         }
         
-        lklBlow = new LinkedList();
         
-          for (int iI = 0; iI < 16; iI ++) {
-            for (int iJ = 0; iJ < 3; iJ++){
-                
-                
-            }
-          }
         int iPosXVi = 940;
         int iPosYVi = 330;
         
@@ -212,6 +205,8 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         
         sndBack = new SoundClip("babyBlue.wav");
         sndFinal = new SoundClip("breakingMain.wav");
+        sndBitch = new SoundClip("yeahbitch.wav");
+        
         
         sndBack.setLooping(true);
         sndBack.play();
@@ -252,6 +247,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         {
             //Actualiza la aniBitch en base al tiempo transcurrido
             aniBitch.actualiza(tiempoTranscurrido);
+            sndBitch.play();
         }
         
         
@@ -374,7 +370,8 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
        // si se mueve hacia abajo
         // y se esta saliendo del applet
         else if(maiFire.getY() + maiFire.getAlto() > getHeight()) {
-            // se queda en su lugar sin salirse del applet        
+            // se queda en su lugar sin salirse del applet 
+            sndBitch.play();
             bCorre = false;
             iContVidas--;
             Base vida = (Base) lklVidas.get(0);
