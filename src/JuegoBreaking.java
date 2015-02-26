@@ -27,6 +27,8 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     private int iDireccion;  //direccion de la pelotilla o fuego
     private int iContVidas;  //contador de vidas
     private int iMovBol; //direccion bolita
+    private int iPosXAnim;  //posicion x de animacion
+    private int iPosYAnim;  //posicion y de animacion
     private long lonTiempoActual;
     private long lonTiempoInicial;
     private boolean bolPause;   //boleana para pausar
@@ -127,6 +129,9 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
            lklVidas.add(maiVidas);
            iPosXVi = iPosXVi + 60;
         }
+        
+        iPosXAnim = 20;
+        iPosYAnim = 450;
         
         Image imaBitch1 = Toolkit.getDefaultToolkit().getImage(
                         this.getClass().getResource("bitch1.png"));
@@ -360,10 +365,11 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         // si la imagen ya se cargo
         if(!bolEnd){  //si el juego aun continúa
             if (maiBarrilla != null && lklAnfetaminas != null && maiFire != null
-                    && lklVidas != null){
+                    && lklVidas != null && aniBitch != null){
                 //Dibuja la imagen de principal en el Applet
                     maiBarrilla.paint(graDibujo, this);
                     maiFire.paint(graDibujo, this);
+                    graDibujo.drawImage(aniBitch.getImagen(),iPosXAnim, iPosYAnim, this);
                     for (Base basAnfetaminas : lklAnfetaminas) {
                     //Dibuja la imagen de LOS fantasmitas en el Applet
                         basAnfetaminas.paint(graDibujo, this);
