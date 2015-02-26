@@ -123,7 +123,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         
         //creo imagen de las vidas en lista
         for(int iI = 0; iI < 1; iI++){
-            for(int iJ = 0; iJ <3; iJ++) {
+            for(int iJ = 0; iJ <4; iJ++) {
                 URL urlImagenVidas = this.getClass().getResource("vidaBatch.png");
                 maiVidas = new Base (iPosXVi, iPosYVi, (WIDTH / iMAXANCHO) -30,
                         (HEIGHT / iMAXALTO) -20,
@@ -252,14 +252,23 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         switch(iDireccion){
             case 1: {
                 if(maiBarrilla.getX() < 0) { // y se sale del applet
-                    bCheca = true;       // se para
+                    maiBarrilla.setX(0); 
+                    maiBarrilla.setY((maiBarrilla.getY()));      // se para
+                    maiFire.setX((maiBarrilla.getX()+
+                        (maiBarrilla.getAncho()/2)) - (maiFire.getAncho()/2));
                 }
                 break;    	
             }    
             case 2: { // si se mueve hacia derecha 
                 // si se esta saliendo del applet
                 if(maiBarrilla.getX() + maiBarrilla.getAncho() > getWidth()) { 
-                    bCheca = true;       // se para
+                    maiBarrilla.setX(getWidth() - maiBarrilla.getAncho()); 
+                    maiBarrilla.setY((maiBarrilla.getY()));       // se para
+                    if(!bCorre) {
+                      maiFire.setX((maiBarrilla.getX()+
+                              (maiBarrilla.getAncho()/2))
+                              - (maiFire.getAncho()/2));
+                   }
                 }
                 break;  	
             }
@@ -267,19 +276,22 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         for(int iJ = 0; iJ < lklAnfetaminas.size(); iJ++){
                 Base anf = (Base) lklAnfetaminas.get(iJ); 
                 if(maiFire.intersecta(anf)){
-                    lklAnfetaminas.remove(anf);
                     iContAnf ++;
                     if(iMovBol== 1){
-                        iMovBol = 2;
+                        iMovBol = 3;
+                        lklAnfetaminas.remove(anf);
                     }
                     else if(iMovBol == 4 ){
-                        iMovBol = 3;
+                        iMovBol = 2;
+                        lklAnfetaminas.remove(anf);
                     }
                     else if(iMovBol == 3) {
-                        iMovBol = 4;
+                        iMovBol = 2;
+                        lklAnfetaminas.remove(anf);
                     }
                     else if(iMovBol == 2){
-                        iMovBol = 1;
+                        iMovBol = 3;
+                        lklAnfetaminas.remove(anf);
                     }
                 }
 
@@ -298,10 +310,11 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
        // si se mueve hacia abajo
         // y se esta saliendo del applet
         else if(maiFire.getY() + maiFire.getAlto() > getHeight()) {
-            // se queda en su lugar sin salirse del applet
+            // se queda en su lugar sin salirse del applet        
             bCorre = false;
             iContVidas--;
-            lklAnfetaminas.remove(maiVidas);
+            Base vida = (Base) lklVidas.get(0);
+            lklVidas.remove(vida);
             //aqui falta agregar que se elimine la imagen de la vida
             
             posInicial();               
