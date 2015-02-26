@@ -51,6 +51,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
     private SoundClip sndBack; //musica de fondo
     private SoundClip sndBitch;  //sonido cuando se salga la bolita 
     private SoundClip sndColision; //sonido cuando golpee las metanfetaminas
+    private SoundClip sndFinal;  //sonido al terminar el juego
     
     public JuegoBreaking() {
         
@@ -158,6 +159,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         aniBitch.sumaCuadro(imaBitch5, 100);
         
         sndBack = new SoundClip("babyBlue.wav");
+        sndFinal = new SoundClip("breakingMain.wav");
         
         sndBack.setLooping(true);
         sndBack.play();
@@ -456,6 +458,8 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
             }else if(e.getKeyCode() == KeyEvent.VK_ESCAPE){ 
             //si la boleana de esc falsa
                 bolEnd = true;
+                sndBack.stop();
+                sndFinal.play();
             }else if(e.getKeyCode() == KeyEvent.VK_P){  
                 //si la boleana de pausa es falsa
                 if (bolPause)
