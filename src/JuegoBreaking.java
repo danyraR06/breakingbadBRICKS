@@ -88,7 +88,7 @@ public class JuegoBreaking extends JFrame implements Runnable, KeyListener{
         int posXBol = (WIDTH / 2 - maiBarrilla.getAncho() / 2);
         int posYBol = (HEIGHT - maiBarrilla.getAlto());
         
-        URL urlImagenBolita = this.getClass().getResource("gomez.png");
+        URL urlImagenBolita = this.getClass().getResource("gomezgif_1.gif");
         
         maiFire = new Base (posXBol, posYBol, (WIDTH / iMAXANCHO) - 30,
                 HEIGHT / iMAXALTO,
